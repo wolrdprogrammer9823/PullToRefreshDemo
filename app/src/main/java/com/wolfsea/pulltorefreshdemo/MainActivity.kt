@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
                 loadMoreListener.mIsAllScreen = false
                 recyclerview.adapter?.notifyDataSetChanged()
-                
+
                 if (swipe_refresh_layout.isRefreshing) {
 
                     swipe_refresh_layout.isRefreshing = false
