@@ -1,0 +1,3 @@
+package com.wolfsea.pulltorefreshdemo.listener
+
+interface OnSmartRefreshLoadMoreListener : OnRefreshingListener, OnSmartLoadMoreListener

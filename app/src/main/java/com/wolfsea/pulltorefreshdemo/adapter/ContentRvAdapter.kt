@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.wolfsea.pulltorefreshdemo.R
 import com.wolfsea.pulltorefreshdemo.listener.OnLoadMoreListener
+import com.wolfsea.pulltorefreshdemo.logger.log
 import com.wolfsea.pulltorefreshdemo.viewholder.ContentViewHolder
 import com.wolfsea.pulltorefreshdemo.viewholder.FooterViewHolder
 
@@ -22,6 +23,8 @@ class ContentRvAdapter(
     private val mContext = context
     private val mDataSource = dataSource
     private val mLoadMoreListener = loadMoreListener
+
+    var mIsLoadMore = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == TYPE_FOOTER) {
@@ -42,10 +45,15 @@ class ContentRvAdapter(
         }
     }
 
-    override fun getItemCount(): Int = if (mLoadMoreListener.mIsAllScreen) mDataSource.size + 1 else mDataSource.size
+    override fun getItemCount(): Int = if (mIsLoadMore) mDataSource.size + 1 else mDataSource.size
 
-    override fun getItemViewType(position: Int): Int =
-        if (position == mDataSource.size && mLoadMoreListener.mIsAllScreen) TYPE_FOOTER else TYPE_CONTENT
+    override fun getItemViewType(position: Int): Int {
+        return if (position + 1 == itemCount && mIsLoadMore) {
+            TYPE_FOOTER
+        } else {
+            TYPE_CONTENT
+        }
+    }
 
     companion object {
         const val TYPE_CONTENT = 0x01

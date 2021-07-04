@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.wolfsea.pulltorefreshdemo.adapter.ContentRvAdapter
 import com.wolfsea.pulltorefreshdemo.extendmethod.toast
 import com.wolfsea.pulltorefreshdemo.listener.OnLoadMoreListener
+import com.wolfsea.pulltorefreshdemo.listener.OnRefreshingListener
+import com.wolfsea.pulltorefreshdemo.listener.OnSmartLoadMoreListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 
@@ -14,6 +16,8 @@ class MainActivity : AppCompatActivity() {
 
     private var count = 0
     private var listData = mutableListOf<Int>()
+
+    private var mRvAdapter: ContentRvAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -25,11 +29,18 @@ class MainActivity : AppCompatActivity() {
 
     //加载更多监听器
     private val loadMoreListener: OnLoadMoreListener = object : OnLoadMoreListener() {
-        override fun onLoading(countItem: Int, lastItem: Int) {
-            GlobalScope.launch {
-                delay(3000)
-                withContext(Dispatchers.Main) {
-                    getData(LOAD_MORE)
+        override fun onLoading() {
+            val notInRefreshing = !swipe_refresh_layout.isRefreshing
+            if (notInRefreshing) {
+
+                mRvAdapter?.mIsLoadMore = true
+                mRvAdapter?.notifyDataSetChanged()
+
+                GlobalScope.launch {
+                    delay(3000)
+                    withContext(Dispatchers.Main) {
+                        getData(LOAD_MORE)
+                    }
                 }
             }
         }
@@ -54,12 +65,14 @@ class MainActivity : AppCompatActivity() {
      *@time: 2021/6/25 0:27
     **/
     private fun initRecyclerView() {
+
+        mRvAdapter = ContentRvAdapter(this@MainActivity, listData, loadMoreListener)
+
         recyclerview.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             itemAnimator = DefaultItemAnimator()
-            adapter =
-                ContentRvAdapter(this@MainActivity, listData, loadMoreListener)
-            addOnScrollListener(loadMoreListener)
+            adapter = mRvAdapter
+            //addOnScrollListener(loadMoreListener)
         }
     }
 
@@ -77,16 +90,29 @@ class MainActivity : AppCompatActivity() {
             android.R.color.holo_orange_light
         )
 
-        swipe_refresh_layout.setProgressBackgroundColorSchemeResource(android.R.color.white)
+        //swipe_refresh_layout.setProgressBackgroundColorSchemeResource(android.R.color.white)
 
-        swipe_refresh_layout.setOnRefreshListener {
-            GlobalScope.launch {
-                delay(3000)
-                withContext(Dispatchers.Main) {
-                    getData(REFRESH)
+        swipe_refresh_layout.setOnRefreshingListener(object : OnRefreshingListener{
+            override fun onRefreshing() {
+                GlobalScope.launch {
+                    delay(3000)
+                    withContext(Dispatchers.Main) {
+                        getData(REFRESH)
+                    }
                 }
             }
-        }
+        })
+
+        swipe_refresh_layout.setOnLoadMoreListener(recyclerview,object : OnSmartLoadMoreListener {
+            override fun onLoadMore() {
+                GlobalScope.launch {
+                    delay(3000)
+                    withContext(Dispatchers.Main) {
+                        getData(LOAD_MORE)
+                    }
+                }
+            }
+        })
     }
 
     /**
@@ -115,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                     listData.add(0, count)
                 }
 
-                recyclerview.adapter?.notifyDataSetChanged()
+                mRvAdapter?.notifyDataSetChanged()
                 if (swipe_refresh_layout.isRefreshing) {
 
                     swipe_refresh_layout.isRefreshing = false
@@ -131,8 +157,8 @@ class MainActivity : AppCompatActivity() {
                     listData.add(listData.size, count)
                 }
 
-                loadMoreListener.mIsAllScreen = false
-                recyclerview.adapter?.notifyDataSetChanged()
+                mRvAdapter?.mIsLoadMore = false
+                mRvAdapter?.notifyDataSetChanged()
 
                 if (swipe_refresh_layout.isRefreshing) {
 

@@ -10,62 +10,43 @@ import com.wolfsea.pulltorefreshdemo.logger.log
  **/
 abstract class OnLoadMoreListener : RecyclerView.OnScrollListener() {
 
-    private var countItem = 0
-    private var lastItem = 0
-
-    private var mIsScrolled = false
-
-    var mIsAllScreen = false
-
-    private lateinit var mLayoutManager: RecyclerView.LayoutManager
+    private var mLastVisibleItem = 0
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 
         super.onScrollStateChanged(recyclerView, newState)
-
         when (newState) {
 
             RecyclerView.SCROLL_STATE_IDLE -> {
                 //停止状态
-
+                //log("SCROLL_STATE_IDLE")
+                val condition = mLastVisibleItem == recyclerView.adapter?.itemCount!! - 1
+                if (condition) {
+                    onLoading()
+                }
             }
 
             RecyclerView.SCROLL_STATE_DRAGGING -> {
                 //拖拽
-
+                //log("SCROLL_STATE_DRAGGING")
             }
 
             RecyclerView.SCROLL_STATE_SETTLING -> {
                 //固定
-
+                //log("SCROLL_STATE_SETTLING")
             }
 
             else -> {}
         }
-
-        if (newState == RecyclerView.SCROLL_STATE_DRAGGING
-                     || newState == RecyclerView.SCROLL_STATE_SETTLING) {
-
-            mIsScrolled = true
-            mIsAllScreen = true
-        }
     }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-
         super.onScrolled(recyclerView, dx, dy)
-        if (recyclerView.layoutManager is LinearLayoutManager) {
-
-            mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-            countItem = mLayoutManager.itemCount
-            lastItem = (mLayoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-        }
-
-        if (mIsScrolled && countItem != lastItem && lastItem == countItem - 1) {
-
-            onLoading(countItem, lastItem)
+        val layoutManager = recyclerView.layoutManager
+        if (layoutManager is LinearLayoutManager) {
+            mLastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition()
         }
     }
 
-    abstract fun onLoading(countItem: Int, lastItem: Int)
+    abstract fun onLoading()
 }
