@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class LoadRecyclerAdapter extends RecyclerView.Adapter {
+public abstract class LoadRecyclerAdapter3 extends RecyclerView.Adapter {
 
     private View footView;
     private int footerCount;

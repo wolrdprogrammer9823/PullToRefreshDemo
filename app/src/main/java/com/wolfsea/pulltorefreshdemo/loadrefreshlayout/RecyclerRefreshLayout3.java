@@ -7,15 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.wolfsea.pulltorefreshdemo.loadrefreshlayout.base.RefreshLayout;
 
-public class RecyclerRefreshLayout extends RefreshLayout {
+public class RecyclerRefreshLayout3 extends RefreshLayout {
 
     private RecyclerView mRecyclerView;
 
-    public RecyclerRefreshLayout(Context context) {
+    public RecyclerRefreshLayout3(Context context) {
         this(context, null);
     }
 
-    public RecyclerRefreshLayout(Context context, AttributeSet attrs) {
+    public RecyclerRefreshLayout3(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

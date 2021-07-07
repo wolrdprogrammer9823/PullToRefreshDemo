@@ -81,7 +81,7 @@ class RecyclerActivity : AppCompatActivity(),SwipeRefreshLayout.OnRefreshListene
 
         private lateinit var mBinding: ViewListItemBinding
 
-        override fun onCreateItemViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
+        override fun createItemViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
 
             mBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(this@RecyclerActivity),
@@ -92,14 +92,14 @@ class RecyclerActivity : AppCompatActivity(),SwipeRefreshLayout.OnRefreshListene
             return LoadViewHolder(mBinding)
         }
 
-        override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+        override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
             val value = dataSet[position]
-            holder?.itemView?.tvTest?.text = value
+            holder.itemView.tvTest?.text = value
             if (position % 2 == 0) {
-                holder?.itemView?.tvTest?.setBackgroundColor(mBinding.tvTest.resources.getColor(R.color.teal_200))
+                holder.itemView.tvTest?.setBackgroundColor(mBinding.tvTest.resources.getColor(R.color.teal_200))
             } else {
-                holder?.itemView?.tvTest?.setBackgroundColor(mBinding.tvTest.resources.getColor(R.color.teal_700))
+                holder.itemView.tvTest?.setBackgroundColor(mBinding.tvTest.resources.getColor(R.color.teal_700))
             }
         }
     }
