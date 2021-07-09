@@ -16,7 +16,7 @@ class RecyclerRefreshLayout : RefreshLayout {
 
     private var recyclerView: RecyclerView? = null
 
-    constructor(context: Context) : super(context)
+    constructor(context: Context) : super(context,null)
 
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
 

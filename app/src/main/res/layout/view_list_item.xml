@@ -16,11 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:gravity="center"
-                android:text="测试数据" />
+                android:text="测试数据"/>
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px" />
     </LinearLayout>
 </layout>
